@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './question.dart';
-import './answer.dart';
+import './quiz.dart';
+import './result.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
-  var questions = [
+  final _questions = const [
     {
       'question': 'What is you favourite color?',
       'answers': ['Black', 'Red', 'Green', 'Blue'],
@@ -28,16 +28,35 @@ class _MyAppState extends State<MyApp> {
     {
       'question': 'What is your favourite sport?',
       'answers': ['Sailing', 'Footbal', 'Running', 'Swimming']
+    },
+    {
+      'question': 'What is your star sign?',
+      'answers': [
+        'Aries',
+        'Taurus',
+        'Gemini',
+        'Cancer',
+        'Leo',
+        'Virgo',
+        'Libra',
+        'Scorpious',
+        'Sagittarius',
+        'Capricornus',
+        'Aquarius',
+        'Piscesß'
+      ]
     }
   ];
 
   void _answerQuestion() {
     setState(() {
-      if (_questionIndex == questions.length - 1) {
-        _questionIndex = 0;
-      } else {
-        _questionIndex++;
-      }
+      _questionIndex++;
+    });
+  }
+
+  void _resetQuiz() {
+    setState(() {
+      _questionIndex = 0;
     });
   }
 
@@ -48,17 +67,14 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Personality Quiz!'),
         ),
-        body: Column(
-          children: <Widget>[
-            Question(
-              text: questions[_questionIndex]['question'],
-            ),
-            ...(questions[this._questionIndex]['answers'] as List<String>)
-                .map(
-                    (answer) => Answer(text: answer, callback: _answerQuestion))
-                .toList(),
-          ],
-        ),
+        body: _questionIndex < _questions.length
+            ? Quiz(
+                questions: _questions,
+                questionIndex: _questionIndex,
+                answerQuestion: _answerQuestion)
+            : Result(
+                callback: _resetQuiz,
+              ),
       ),
     );
   }
